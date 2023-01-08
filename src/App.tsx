@@ -1,7 +1,13 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+import styled from "styled-components";
 // import Circle from "./Circle";
 // import { useState } from 'react';
 import Router from "./Router";
+import { ReactQueryDevtools } from "react-query/devtools";
+import { darkTheme, lightTheme } from "./theme";
+import { useState } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
@@ -69,26 +75,30 @@ a {
 }
 `;
 
+const ThemeSwitch = styled.button<IThemeSwitch>`
+    border: none;
+    background: transparent;
+    color: ${(props) => props.color};
+`
+
+interface IThemeSwitch {
+  color: string;
+}
+
 function App() {
-  // const [value, setValue] = useState("");
-  // const onChange = (event: React.FormEvent<HTMLInputElement>) => {
-  //   // The code below is destructuring event object and extract value from event.currentTarget
-  //   // Thus, value in currentTarget: {value} means the value of the currentTarget from event that is recently triggered  
-  //   const {
-  //     currentTarget: {value},
-  //   } = event;
-
-  //   setValue(value);
-  // }
-
-  // const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   console.log("hello", value);
-  // };
+  const [isDark, setIsDark] = useState(false);
+  console.log(isDark);
+  const toggleDark = () => setIsDark((current) => !current);
 
   return (<>
-    <GlobalStyle/>
-    <Router/>
+    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+        <ThemeSwitch color={isDark ? "whitesmoke" : "#353b48"} onClick={toggleDark}>
+          <FontAwesomeIcon icon={isDark? faSun : faMoon} />
+        </ThemeSwitch>
+        <GlobalStyle />
+        <Router />
+        <ReactQueryDevtools initialIsOpen={true} />
+    </ThemeProvider>
   </>);
 }
 
