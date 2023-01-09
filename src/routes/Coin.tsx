@@ -139,7 +139,11 @@ interface PriceData {
     }};
 }
 
-function Coin() {    
+interface ICoinProps {
+    isDark: boolean;
+}
+
+function Coin({ isDark }:ICoinProps) {    
     const { coinId } = useParams<RouteParams>();
     const { state } = useLocation<RouteState>();
 
@@ -160,7 +164,7 @@ function Coin() {
             </Helmet>
             <Header>
                 <Link to={{ pathname: `/`}}>&larr; Back</Link>
-                <Title>{ state?.name || "Loading..." }</Title>    
+                <Title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</Title>    
             </Header>    
                 {/* a tag refreshes the webpage thus we use "LINK"s */}
                 {loading? (<Loader>Loading...</Loader>) : (
@@ -205,7 +209,7 @@ function Coin() {
                                 <Price/>
                             </Route>
                             <Route path={`/${coinId}/chart`}>
-                                <Chart coinId={coinId} />
+                                <Chart coinId={coinId} isDark={ isDark }/>
                             </Route>
                         </Switch>
                     </>
