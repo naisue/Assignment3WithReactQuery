@@ -5,6 +5,8 @@ import { fetchCoins } from "../api";
 import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { isDarkAtom } from "../atoms";
 
 const Title = styled.h1`
 color: ${props => props.theme.accentColor};`
@@ -65,15 +67,15 @@ const Img = styled.img`
     margin-right: 10px;
 `
 
-interface IThemeSwitch {
-    isDark: boolean;
-  }
-
 const ThemeSwitch = styled.button<IThemeSwitch>`
     border: none;
     background: transparent;
     color: ${({ isDark }) => isDark?"whitesmoke":"#353b48"};
 `
+
+interface IThemeSwitch{
+    isDark: boolean;
+}
 
 const coins = [
     {
@@ -105,15 +107,13 @@ const coins = [
     },
   ];
 
-interface ICoinsProps {
-    isDark: boolean;
-    toggleDark: () => void;
-}
+function Coins() {
+    const isLoading  = false;
 
-function Coins(props:ICoinsProps) {
-    const  isLoading  = false;
+    const isDark = useRecoilValue(isDarkAtom);
+    const toggleDarkAtom = () => setDarkAtom(prev => !prev);
+    const setDarkAtom = useSetRecoilState(isDarkAtom);
     // const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
-    console.log(props.isDark)
     return (
         <Container>
             <Helmet>
@@ -121,8 +121,8 @@ function Coins(props:ICoinsProps) {
             </Helmet>
             <Header>
                 <Title>코인</Title>
-                <ThemeSwitch isDark={ props.isDark } onClick={ props.toggleDark }>
-                    <FontAwesomeIcon icon={props.isDark? faSun : faMoon} />
+                <ThemeSwitch isDark={ isDark } onClick={ toggleDarkAtom }>
+                    <FontAwesomeIcon icon={ isDark? faSun : faMoon } />
                 </ThemeSwitch>    
             </Header>
             {isLoading? (<Loader>Loading...</Loader>) : (    
